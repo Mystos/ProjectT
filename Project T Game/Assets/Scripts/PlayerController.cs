@@ -7,8 +7,10 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
     public SpriteRenderer spriteRenderer;
     public bool isGrounded;
-    public Transform groundCheckLeft;
-    public Transform groundCheckRight;
+
+    public Transform groundCheck;
+    public float groundCheckRadius;
+    public LayerMask collisionLayers;
 
     public Rigidbody2D rb;
     private Vector3 velocity = Vector3.zero;
@@ -16,10 +18,12 @@ public class PlayerController : MonoBehaviour
     public bool isJumping = false;
     public int doubleJump = 1;
     public bool isDoubleJumping = false;
+
+    private float horizontalMovement;
     // Update is called once per frame
     void Update()
     {
-        isGrounded = Physics2D.OverlapArea(groundCheckLeft.position, groundCheckRight.position); // Dessine une ligne entre les deux transforme
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, collisionLayers); // Dessine une ligne entre les deux transforme
 
         if (isGrounded)
         {
@@ -43,19 +47,18 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("IsDoubleJumping", isDoubleJumping);
         animator.SetInteger("JumpCount", doubleJump);
 
-    }
-
-    void FixedUpdate()
-    {
-        float horizontalMovement = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
-
-        MovePlayer(horizontalMovement);
-
         Flip(rb.velocity.x);
 
         float characterVelocity = Mathf.Abs(rb.velocity.x);
         animator.SetFloat("xSpeed", characterVelocity);
         animator.SetFloat("ySpeed", rb.velocity.y);
+    }
+
+    void FixedUpdate()
+    {
+        horizontalMovement = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
+
+        MovePlayer(horizontalMovement);
     }
 
     void MovePlayer(float horizontalMovement)
@@ -89,5 +92,11 @@ public class PlayerController : MonoBehaviour
             spriteRenderer.flipX = true;
 
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
     }
 }
