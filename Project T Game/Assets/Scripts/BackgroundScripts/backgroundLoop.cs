@@ -13,7 +13,7 @@ public class backgroundLoop : MonoBehaviour
     void Start()
     {
         mainCamera = gameObject.GetComponent<Camera>();
-        screenBounds = mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, mainCamera.transform.position.z));
+        screenBounds = mainCamera.ScreenToWorldPoint(new Vector3(Screen.width + 50, Screen.height, mainCamera.transform.position.z));
         foreach (GameObject obj in levels)
         {
             loadChildObjects(obj);
