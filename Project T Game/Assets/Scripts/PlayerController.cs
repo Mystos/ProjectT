@@ -15,9 +15,11 @@ public class PlayerController : MonoBehaviour
     public Rigidbody2D rb;
     private Vector3 velocity = Vector3.zero;
 
-    public bool isJumping = false;
-    public int doubleJump = 1;
-    public bool isDoubleJumping = false;
+    private bool isJumping = false;
+    private int doubleJump = 1;
+    private bool isDoubleJumping = false;
+    private bool hasJustPressedJump = false;
+    private bool hasJustLanded = false;
 
     private float horizontalMovement;
     // Update is called once per frame
@@ -32,10 +34,15 @@ public class PlayerController : MonoBehaviour
 
         animator.SetBool("IsGrounded", isGrounded);
 
-        if(Input.GetButtonDown("Jump") && isGrounded)
+        if (Input.GetButtonDown("Jump") && isGrounded && !isJumping)
         {
-            isJumping = true;
+            hasJustPressedJump = true;
         }
+
+        //if (Input.GetButtonDown("Jump") && isGrounded && !hasJustPressedJump)
+        //{
+        //    isJumping = true;
+        //}
 
         // Double saut
         if (Input.GetButtonDown("Jump") && !isGrounded && doubleJump >= 1)
@@ -45,6 +52,8 @@ public class PlayerController : MonoBehaviour
         }
 
         animator.SetBool("IsDoubleJumping", isDoubleJumping);
+        animator.SetBool("HasJustPressedJump", hasJustPressedJump);
+        animator.SetBool("HasJustLanded", hasJustLanded);
         animator.SetInteger("JumpCount", doubleJump);
 
         Flip(rb.velocity.x);
@@ -66,7 +75,6 @@ public class PlayerController : MonoBehaviour
         Vector3 targetVelocity = new Vector2(horizontalMovement, rb.velocity.y);
         rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref velocity, 0.05f);
 
-
         if (isJumping)
         {
             rb.AddForce(new Vector2(0f, jumpForce));
@@ -76,7 +84,6 @@ public class PlayerController : MonoBehaviour
         {
             rb.AddForce(new Vector2(0f, jumpForce));
             isDoubleJumping = false;
-
         }
     }
 
@@ -98,5 +105,18 @@ public class PlayerController : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+    }
+
+    public void AnimationEndAlerts(string message)
+    {
+        if (message.Equals("PlayerBeforeJumpEnd"))
+        {
+            hasJustPressedJump = false;
+            isJumping = true;
+        }
+        if (message.Equals(" PlayerAfterJumpEnd"))
+        {
+            hasJustLanded = false;
+        }
     }
 }
