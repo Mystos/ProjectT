@@ -40006,6 +40006,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8525457c270def41aa24e7ed9f9d4a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  landingDustPrefab: {fileID: 6981461186157332277, guid: 7c9d125debf80b248b18f0f118fd1abd, type: 3}
+  jumpDustPrefab: {fileID: 1613142090070128218, guid: 37b671794fc260149920088ebfbb7335, type: 3}
+  fallMultiplier: 2.5
+  lowJumpMultiplier: 2
   moveSpeed: 500
   jumpForce: 700
   animator: {fileID: 2147200830}

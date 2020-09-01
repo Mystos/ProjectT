@@ -2,6 +2,12 @@
 
 public class PlayerController : MonoBehaviour
 {
+    public GameObject landingDustPrefab;
+    public GameObject jumpDustPrefab;
+
+    public float fallMultiplier = 2.5f;
+    public float lowJumpMultiplier = 2f;
+
     public float moveSpeed;
     public float jumpForce;
     public Animator animator;
@@ -25,6 +31,9 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+
+
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, collisionLayers); // Dessine une ligne entre les deux transforme
 
         if (isGrounded)
@@ -61,6 +70,9 @@ public class PlayerController : MonoBehaviour
         float characterVelocity = Mathf.Abs(rb.velocity.x);
         animator.SetFloat("xSpeed", characterVelocity);
         animator.SetFloat("ySpeed", rb.velocity.y);
+
+
+
     }
 
     void FixedUpdate()
@@ -72,16 +84,29 @@ public class PlayerController : MonoBehaviour
 
     void MovePlayer(float horizontalMovement)
     {
+        // Movement Horizontal
         Vector3 targetVelocity = new Vector2(horizontalMovement, rb.velocity.y);
         rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref velocity, 0.05f);
 
+        // Nuancier de saut
+        if (rb.velocity.y < 0)
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+        }
+        else if (rb.velocity.y > 0 && !Input.GetButton("Jump"))
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+        }
+
         if (isJumping)
         {
+            rb.velocity = new Vector2(rb.velocity.x, 0f);
             rb.AddForce(new Vector2(0f, jumpForce));
             isJumping = false;
         }
         if (isDoubleJumping)
         {
+            rb.velocity = new Vector2(rb.velocity.x, 0f);
             rb.AddForce(new Vector2(0f, jumpForce));
             isDoubleJumping = false;
         }
@@ -114,9 +139,17 @@ public class PlayerController : MonoBehaviour
             hasJustPressedJump = false;
             isJumping = true;
         }
-        if (message.Equals(" PlayerAfterJumpEnd"))
+        if (message.Equals("PlayerAfterJumpEnd"))
         {
             hasJustLanded = false;
+        }
+        if (message.Equals("PlayerLandedStart"))
+        {
+            Instantiate(landingDustPrefab, new Vector3(this.transform.position.x, this.transform.position.y - 0.25f), Quaternion.identity);
+        }
+        if (message.Equals("PlayerJumpStart"))
+        {
+            Instantiate(jumpDustPrefab, new Vector3(this.transform.position.x, this.transform.position.y), Quaternion.identity);
         }
     }
 }
