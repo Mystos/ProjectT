@@ -5,6 +5,9 @@ public class PlayerStats : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
 
+    public int force;
+    public int dex;
+
     public HealthBar healthBar;
     // Start is called before the first frame update
     void Start()

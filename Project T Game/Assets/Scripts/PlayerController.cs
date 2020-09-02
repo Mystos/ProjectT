@@ -45,11 +45,6 @@ public class PlayerController : MonoBehaviour
             hasJustPressedJump = true;
         }
 
-        //if (Input.GetButtonDown("Jump") && isGrounded && !hasJustPressedJump)
-        //{
-        //    isJumping = true;
-        //}
-
         // Double saut
         if (Input.GetButtonDown("Jump") && !isGrounded && doubleJump >= 1)
         {
