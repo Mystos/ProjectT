@@ -41,7 +41,15 @@ public class EnemyBehaviour : MonoBehaviour
 
     void TargetChange(GameObject newTarget)
     {
-        target = newTarget;
+        if(newTarget == null)
+        {
+            target = null;
+
+        }
+        if (newTarget != target)
+        {
+            target = newTarget;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -49,6 +57,14 @@ public class EnemyBehaviour : MonoBehaviour
         if (!collision.isTrigger && collision.CompareTag("Player"))
         {
             TargetChange(collision.gameObject);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (!collision.isTrigger && collision.CompareTag("Player"))
+        {
+            TargetChange(null);
         }
     }
 
