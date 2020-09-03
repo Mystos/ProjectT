@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     public LayerMask collisionLayers;
 
     public Rigidbody2D rb;
+    public GameObject dialogueBox;
     private Vector3 velocity = Vector3.zero;
 
     private bool isJumping = false;
@@ -28,12 +29,14 @@ public class PlayerController : MonoBehaviour
     private bool isDoubleJumping = false;
     private bool hasJustPressedJump = false;
     private bool hasJustLanded = false;
+    private bool isInInteraction = false;
 
     private float horizontalMovement;
     // Update is called once per frame
     void Update()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, collisionLayers); // Dessine une ligne entre les deux transforme
+        isInInteraction = dialogueBox.activeSelf;
 
         if (isGrounded)
         {
@@ -42,7 +45,7 @@ public class PlayerController : MonoBehaviour
 
         animator.SetBool("IsGrounded", isGrounded);
 
-        if (Input.GetButtonDown("Jump") && isGrounded && !isJumping)
+        if (Input.GetButtonDown("Jump") && isGrounded && !isJumping && !animator.GetBool("IsInInteraction"))
         {
             hasJustPressedJump = true;
         }
@@ -54,6 +57,7 @@ public class PlayerController : MonoBehaviour
             doubleJump--;
         }
 
+        animator.SetBool("IsInInteraction", isInInteraction);
         animator.SetBool("IsDoubleJumping", isDoubleJumping);
         animator.SetBool("HasJustPressedJump", hasJustPressedJump);
         animator.SetBool("HasJustLanded", hasJustLanded);
@@ -151,7 +155,16 @@ public class PlayerController : MonoBehaviour
             Instantiate(jumpDustPrefab, new Vector3(this.transform.position.x, this.transform.position.y), Quaternion.identity);
         }
 
+    }
 
-
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if(collision.isTrigger && collision.CompareTag("Interactable"))
+        {
+            if (Input.GetButtonDown("Fire2"))
+            {
+                collision.SendMessageUpwards("TriggerDialogue");
+            }
+        }
     }
 }

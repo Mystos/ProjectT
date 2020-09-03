@@ -11,7 +11,7 @@ public class EnemyBehaviour : MonoBehaviour
     public int moveSpeed;
     public Animator anim;
     public Rigidbody2D rb;
-
+    public GameObject redEyes;
     private Vector3 velocity;
 
     private void Update()
@@ -49,6 +49,16 @@ public class EnemyBehaviour : MonoBehaviour
         if (newTarget != target)
         {
             target = newTarget;
+            if (!facingRight)
+            {
+                Instantiate(redEyes, new Vector3(this.transform.position.x + -0.2f, this.transform.position.y + 0.1f), Quaternion.identity);
+            }
+            else
+            {
+                Instantiate(redEyes, new Vector3(this.transform.position.x + 0.2f, this.transform.position.y + 0.1f), Quaternion.identity);
+
+            }
+
         }
     }
 

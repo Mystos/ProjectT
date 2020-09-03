@@ -17,7 +17,7 @@ public class PlayerAttack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetButtonDown("Fire1") && !attacking && anim.GetBool("IsGrounded") && !anim.GetBool("HasJustPressedJump"))
+        if(Input.GetButtonDown("Fire1") && !attacking && anim.GetBool("IsGrounded") && !anim.GetBool("HasJustPressedJump") && !anim.GetBool("IsInInteraction"))
         {
             attacking = true;
             attackTrigger.enabled = true;
