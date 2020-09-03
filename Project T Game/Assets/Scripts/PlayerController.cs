@@ -2,6 +2,8 @@
 
 public class PlayerController : MonoBehaviour
 {
+    public bool facingRight = true;
+
     public GameObject landingDustPrefab;
     public GameObject jumpDustPrefab;
 
@@ -107,15 +109,20 @@ public class PlayerController : MonoBehaviour
     void Flip(float velocity)
     {
 
-        if(velocity > 0.1f)
+        Vector3 localScale = transform.localScale;
+        if (velocity < -0.1)
         {
-            spriteRenderer.flipX = false;
+            facingRight = false;
         }
-        else if(velocity < -0.1f)
+        else if (velocity > 0.1)
         {
-            spriteRenderer.flipX = true;
-
+            facingRight = true;
         }
+        if (((facingRight) && (localScale.x < 0)) || ((!facingRight) && (localScale.x > 0)))
+        {
+            localScale.x *= -1;
+        }
+        transform.localScale = localScale;
     }
 
     private void OnDrawGizmos()
@@ -143,5 +150,8 @@ public class PlayerController : MonoBehaviour
         {
             Instantiate(jumpDustPrefab, new Vector3(this.transform.position.x, this.transform.position.y), Quaternion.identity);
         }
+
+
+
     }
 }
